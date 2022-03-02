@@ -8,6 +8,9 @@ public class Pig {
     private int playerOnePoints;
     private int playerTwoPoints;
     private boolean finished = false;
+    private int playerNumber = 1;
+    private int playerOneCurrentPoints;
+    private int playerTwoCurrentPoints;
 
 
     public Pig() {
@@ -15,6 +18,11 @@ public class Pig {
         scan = new Scanner(System.in);
     }
 
+    /**
+     * Tjekker spillerens point for at se efter om de er nået over 100
+     *
+     * @param points
+     */
     public void checkWinCondition(int points) {
         if (points >= 100) {
             System.out.println("Congratulations you win");
@@ -22,75 +30,95 @@ public class Pig {
         }
     }
 
+    /**
+     * Når spillet er slut efter en når 100
+     */
     public void gameOver() {
         System.out.println("Thanks for playing!");
         finished = true;
         System.exit(0);
     }
 
+    /**
+     * Byder brugeren velkommen
+     */
     public void welcomeGame() {
         System.out.println("Welcome to the Pig game!");
     }
 
-    public void takeTurn(int playerNumber) {
+    /**
+     * Skifter player nummer
+     *
+     * @return
+     */
+    public int switchPlayerNumber() {
+
+        System.out.println("Do you wish to throw the dice Y/N");
+        String svar = scan.nextLine();
+        if (svar.equalsIgnoreCase("N")) {
+            if (playerNumber == 1) {
+                playerNumber = 2;
+            } else {
+                playerNumber = 1;
+            }
+        }
+        return playerNumber;
+    }
+
+    /**
+     * Metoden der skifter tur mellem hver spiller
+     */
+    public void takeTurn() {
         boolean done = false;
         while (!finished) {
-            if (playerNumber == 1) {
-                int playerOneCurrentPoints = playerOnePoints;
-                while (!done) {
-                    System.out.println("Player One's Turn");
-                    System.out.println("Do you Wish to throw the dice? Y/N");
-                    String svar = scan.nextLine();
-                    if (svar.equalsIgnoreCase("N")) {
+            int playerOneCurrentPoints = playerOnePoints;
+            int playerTwoCurrentPoints = playerTwoPoints;
+            while (!done) {
+                switchPlayerNumber();
+                if (playerNumber == 1) {
+                    die.roll();
+                    if (die.getFaceValue() == 1) {
+                        System.out.println("Player one Threw 1, you suck");
+                        playerOnePoints = playerOneCurrentPoints;
                         playerNumber = 2;
-                        done = true;
                     } else {
-                        die.roll();
-                        if (die.getFaceValue() == 1) {
-                            System.out.println("You Threw 1, you suck");
-                            playerOnePoints = playerOneCurrentPoints;
-                            playerNumber = 2;
-                            done = true;
-                        } else {
-                            playerOnePoints = playerOnePoints + die.getFaceValue();
-                            System.out.println("Player one points is" + getPlayerOnePoints());
-                            checkWinCondition(getPlayerOnePoints());
-                        }
+                        playerOnePoints = playerOnePoints + die.getFaceValue();
+                        System.out.println("Player One's Turn");
+                        System.out.println("Player One points is" + getPlayerOnePoints());
+                        checkWinCondition(getPlayerOnePoints());
                     }
-                }
-            } else if (playerNumber == 2) {
-                int playerTwoCurrentPoints = playerTwoPoints;
-                while (done) {
-                    System.out.println("Player Two's Turn");
-                    System.out.println("Do you Wish to throw the dice? Y/N");
-                    String svar = scan.nextLine();
-                    if (svar.equalsIgnoreCase("N")) {
+                } else {
+                    die.roll();
+                    if (die.getFaceValue() == 1) {
+                        System.out.println("Player two Threw 1, you suck");
+                        playerTwoPoints = playerTwoCurrentPoints;
                         playerNumber = 1;
-                        done = false;
                     } else {
-                        die.roll();
-                        if (die.getFaceValue() == 1) {
-                            System.out.println("You Threw 1, you suck");
-                            playerTwoPoints = playerTwoCurrentPoints;
-                            playerNumber = 1;
-                            done = false;
-                        } else {
-                            playerTwoPoints = playerTwoPoints + die.getFaceValue();
-                            System.out.println("Player Two points is" + getPlayerTwoPoints());
-                            checkWinCondition(getPlayerTwoPoints());
-                        }
+                        playerTwoPoints = playerTwoPoints + die.getFaceValue();
+                        System.out.println("Player Two's turn");
+                        System.out.println("Player two point is: " + getPlayerTwoPoints());
+                        checkWinCondition(getPlayerTwoPoints());
                     }
                 }
             }
         }
+
     }
 
-    //P1's Point
+    /**
+     * Returnere antal point player 1 har
+     *
+     * @return
+     */
     public int getPlayerOnePoints() {
         return playerOnePoints;
     }
 
-    //P2's point
+    /**
+     * Returnere antal point player 2 har
+     *
+     * @return
+     */
     public int getPlayerTwoPoints() {
         return playerTwoPoints;
     }
