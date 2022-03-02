@@ -9,8 +9,10 @@ public class Pig {
     private int playerTwoPoints;
     private boolean finished = false;
     private int playerNumber = 1;
+    private int wincondition = 100;
     private int playerOneCurrentPoints;
     private int playerTwoCurrentPoints;
+
 
 
     public Pig() {
@@ -19,12 +21,20 @@ public class Pig {
     }
 
     /**
+     * Sætter mænge af point der kræves
+     */
+    public void setWincondition(){
+        System.out.print("How much do you wish to play to? : ");
+        wincondition = scan.nextInt();
+    }
+
+    /**
      * Tjekker spillerens point for at se efter om de er nået over 100
      *
      * @param points
      */
     public void checkWinCondition(int points) {
-        if (points >= 100) {
+        if (points >= wincondition) {
             System.out.println("Congratulations you win");
             gameOver();
         }
@@ -52,8 +62,6 @@ public class Pig {
      * @return
      */
     public int switchPlayerNumber() {
-
-        System.out.println("Do you wish to throw the dice Y/N");
         String svar = scan.nextLine();
         if (svar.equalsIgnoreCase("N")) {
             if (playerNumber == 1) {
@@ -71,9 +79,9 @@ public class Pig {
     public void takeTurn() {
         boolean done = false;
         while (!finished) {
-            int playerOneCurrentPoints = playerOnePoints;
-            int playerTwoCurrentPoints = playerTwoPoints;
             while (!done) {
+                playerOneCurrentPoints = playerOnePoints;
+                playerTwoCurrentPoints = playerTwoPoints;
                 switchPlayerNumber();
                 if (playerNumber == 1) {
                     die.roll();
@@ -84,7 +92,8 @@ public class Pig {
                     } else {
                         playerOnePoints = playerOnePoints + die.getFaceValue();
                         System.out.println("Player One's Turn");
-                        System.out.println("Player One points is" + getPlayerOnePoints());
+                        System.out.println("Player One points is: " + getPlayerOnePoints());
+                        System.out.println("Press 'y' to roll, press 'n' to stop");
                         checkWinCondition(getPlayerOnePoints());
                     }
                 } else {
@@ -97,6 +106,7 @@ public class Pig {
                         playerTwoPoints = playerTwoPoints + die.getFaceValue();
                         System.out.println("Player Two's turn");
                         System.out.println("Player two point is: " + getPlayerTwoPoints());
+                        System.out.println("Press 'y' to roll, press 'n' to stop");
                         checkWinCondition(getPlayerTwoPoints());
                     }
                 }
